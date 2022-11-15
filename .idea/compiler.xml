@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="cors-test.main" target="17" />
+      <module name="cors-test.test" target="17" />
+      <module name="magic-factory" target="17" />
+      <module name="magic-factory.main" target="17" />
+      <module name="magic-factory.test" target="17" />
+      <module name="servlet.main" target="11" />
+      <module name="servlet.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
