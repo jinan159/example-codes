@@ -1,0 +1,39 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+jar {
+    enabled = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Database
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    // Dev
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // TestContainers
+    testImplementation "org.testcontainers:junit-jupiter:1.17.2"
+    testImplementation "org.testcontainers:mysql:1.17.2"
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/cors-test" />
+    <file type="web" url="file://$PROJECT_DIR$/mysql-spatial-index" />
     <file type="web" url="file://$PROJECT_DIR$/restdocs-swagger" />
     <file type="web" url="file://$PROJECT_DIR$/servlet" />
     <file type="web" url="file://$PROJECT_DIR$/the-java-bytecodes" />
