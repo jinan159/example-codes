@@ -47,7 +47,7 @@ public class CSVReader implements Closeable {
             if (line == null) {
                 throw new IllegalStateException("line is empty or null.");
             }
-        } catch (IOException | IllegalStateException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return line.split(",");
