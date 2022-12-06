@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  batch-db:
+    image: 'mysql:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: batch-pw
+      MYSQL_DATABASE: spring_batch
+    ports:
+      - "3306:3306"

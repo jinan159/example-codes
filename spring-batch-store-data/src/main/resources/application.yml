@@ -12,3 +12,14 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_batch
+    username: root
+    password: batch-pw
+    driver-class-name: com.mysql.cj.jdbc.Driver
