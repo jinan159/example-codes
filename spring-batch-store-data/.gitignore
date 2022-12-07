@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Ignore large size of CSV file ###
+src/main/resources/csv/*.csv
