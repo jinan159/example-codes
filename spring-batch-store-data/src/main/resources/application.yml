@@ -19,7 +19,37 @@ spring:
     activate:
       on-profile: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/spring_batch
+    url: jdbc:mysql://localhost:3306/spring_batch?rewriteBatchedStatements=true
     username: root
     password: batch-pw
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
+    properties:
+      hibernate:
+        connection:
+          autocommit: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  sql:
+    init:
+      mode: always
+      schema-locations: sql/schema.sql
+batch:
+  resource:
+    location: classpath:csv/fulldata_07_24_05_P_휴게음식점.csv
+    encoding: EUC-KR
+    headers: 번호,개방서비스명,개방서비스아이디,개방자치단체코드,관리번호,
+      인허가일자,인허가취소일자,영업상태구분코드,영업상태명,상세영업상태코드,
+      상세영업상태명,폐업일자,휴업시작일자,휴업종료일자,재개업일자,
+      소재지전화,소재지면적,소재지우편번호,소재지전체주소,도로명전체주소,
+      도로명우편번호,사업장명,최종수정시점,데이터갱신구분,데이터갱신일자,
+      업태구분명,좌표정보(x),좌표정보(y),위생업태명,남성종사자수,
+      여성종사자수,영업장주변구분명,등급구분명,급수시설구분명,총직원수,
+      본사직원수,공장사무직직원수,공장판매직직원수,공장생산직직원수,건물소유구분명,
+      보증액,월세액,다중이용업소여부,시설총규모,전통업소지정번호,
+      전통업소주된음식,홈페이지,ETC
