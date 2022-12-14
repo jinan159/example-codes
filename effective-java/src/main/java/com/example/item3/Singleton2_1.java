@@ -5,11 +5,11 @@ package com.example.item3;
  *     1) static final 필드 활용
  */
 public class Singleton2_1 implements Singleton {
-    private static final Singleton2_1 instance = new Singleton2_1();
+    private static final Singleton2_1 INSTANCE = new Singleton2_1();
     private Singleton2_1() { }
 
     public static Singleton2_1 getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
