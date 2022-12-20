@@ -13,6 +13,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.listener.ItemListenerSupport;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -25,22 +26,22 @@ import org.springframework.core.io.ResourceLoader;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-public class RestAreaStoreJobConfig {
+public class StoreJobConfig {
 
     private static final int PARSE_AND_VALIDATION_STEP_CHUNK_SIZE = 1000;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;
-    private final BatchCsvResourceHolder<RestAreaStore> resourceHolder;
+    private final BatchCsvResourceHolder<Store> resourceHolder;
     private final ResourceLoader resourceLoader;
 
     private int wroteCount;
 
 
     @Bean
-    public Job restAreaStoreJob() {
-        return jobBuilderFactory.get("restAreaStoreJob")
+    public Job storeJob() {
+        return jobBuilderFactory.get("storeJob")
             .incrementer(new RunIdIncrementer())
             .start(storeInsertStep())
             .build();
@@ -49,16 +50,24 @@ public class RestAreaStoreJobConfig {
     @Bean
     public Step storeInsertStep() {
         return stepBuilderFactory.get("storeInsertStep")
-            .<RestAreaStore, RestAreaStore>chunk(PARSE_AND_VALIDATION_STEP_CHUNK_SIZE)
+            .<Store, Store>chunk(PARSE_AND_VALIDATION_STEP_CHUNK_SIZE)
             .reader(itemReader())
             .processor(filterInvalidItemProcessor())
             .writer(itemWriter())
-            .listener(itemReadListener())
-            .listener(itemWriteListener())
+            .listener(itemReadLoggingListener())
+            .listener(itemWriteLoggingListener())
             .build();
     }
 
-    private ItemReader<RestAreaStore> itemReader() {
+    private ItemReadListener<? super Store> itemReadLoggingListener() {
+        return new ItemLoggingListener<>();
+    }
+
+    private ItemWriteListener<? super Store> itemWriteLoggingListener() {
+        return new ItemLoggingListener<>();
+    }
+
+    private ItemReader<Store> itemReader() {
         return new CsvItemReader<>(
             resourceLoader.getResource(resourceHolder.getResourceLocation()),
             resourceHolder.getEncoding(),
@@ -66,7 +75,7 @@ public class RestAreaStoreJobConfig {
         );
     }
 
-    private ItemProcessor<RestAreaStore, RestAreaStore> filterInvalidItemProcessor() {
+    private ItemProcessor<Store, Store> filterInvalidItemProcessor() {
         return item -> {
             if (item.getId() == null) {
                 return null;
@@ -75,53 +84,56 @@ public class RestAreaStoreJobConfig {
         };
     }
 
-    private ItemWriter<RestAreaStore> itemWriter() {
+    private ItemWriter<Store> itemWriter() {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("INSERT INTO store (")
+            .append("id")
+            .append(", store_name")
+            .append(", address")
+            .append(", road_address")
+            .append(", location")
+            .append(") VALUES (")
+            .append(":id")
+            .append(", :storeName")
+            .append(", :address")
+            .append(", :roadAddress")
+            .append(", ST_PointFromText('POINT(:x :y)', 2079)")
+            .append(");");
+
         return new JdbcBatchItemWriter<>() {{
             setDataSource(dataSource);
-            setSql("INSERT INTO rest_area_store (id, store_name, location) values (:id, :storeName, POINT(:x, :y))");
+            setSql(sqlBuilder.toString());
             setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
             afterPropertiesSet();
         }};
     }
 
-    private ItemReadListener<RestAreaStore> itemReadListener() {
-        return new ItemReadListener<>() {
+    private class ItemLoggingListener<I, O> extends ItemListenerSupport<I, O> implements ItemReadListener<I>, ItemWriteListener<O> {
 
-            @Override
-            public void beforeRead() {
+        @Override
+        public void afterRead(I item) {
+            if (log.isDebugEnabled()) log.debug("afterRead : {}", item);
+        }
 
-            }
+        @Override
+        public void onReadError(Exception ex) {
+            log.error("onReadError : {}", ex.getMessage());
+        }
 
-            @Override
-            public void afterRead(RestAreaStore item) {
-                if (log.isDebugEnabled()) log.debug("ItemReadListener : {}", item);
-            }
+        @Override
+        public void afterWrite(List<? extends O> items) {
+            int size = items.size();
+            wroteCount += size;
+            log.info("afterWrite : {}, {}", size, wroteCount);
+        }
 
-            @Override
-            public void onReadError(Exception ex) {
-                log.error("ItemReadListener : {}", ex.getMessage());
-            }
-        };
-    }
-
-    private ItemWriteListener<RestAreaStore> itemWriteListener() {
-        return new ItemWriteListener<>() {
-            @Override
-            public void beforeWrite(List<? extends RestAreaStore> items) {
-                int size = items.size();
-                wroteCount += size;
-                log.info("itemWriteListener : {}, {}", size, wroteCount);
-            }
-
-            @Override
-            public void afterWrite(List<? extends RestAreaStore> items) {
-
-            }
-
-            @Override
-            public void onWriteError(Exception exception, List<? extends RestAreaStore> items) {
-                log.error("ItemWriteListener : {}, {}", items, exception.getMessage());
-            }
-        };
+        @Override
+        public void onWriteError(Exception exception, List<? extends O> items) {
+            String itemsString = items.stream()
+                .map(Object::toString)
+                .reduce((item, nested) -> nested + ", " + item)
+                .orElse("");
+            log.error("onWriteError : [{}], {}", itemsString, exception.getMessage());
+        }
     }
 }

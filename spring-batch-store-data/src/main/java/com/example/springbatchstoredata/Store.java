@@ -9,18 +9,22 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestAreaStore {
+public class Store {
 
     private Long id;
     private String storeName;
+    private String address;
+    private String roadAddress;
     private double x;
     private double y;
 
     @Override
     public String toString() {
-        return "RestAreaStore{" +
+        return "Store{" +
             "id=" + id +
             ", storeName='" + storeName + '\'' +
+            ", address='" + address + '\'' +
+            ", roadAddress='" + roadAddress + '\'' +
             ", x=" + x +
             ", y=" + y +
             '}';

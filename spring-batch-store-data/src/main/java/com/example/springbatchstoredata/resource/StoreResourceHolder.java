@@ -1,6 +1,6 @@
 package com.example.springbatchstoredata.resource;
 
-import com.example.springbatchstoredata.RestAreaStore;
+import com.example.springbatchstoredata.Store;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestAreaStoreResourceHolder implements BatchCsvResourceHolder<RestAreaStore> {
+public class StoreResourceHolder implements BatchCsvResourceHolder<Store> {
 
-    public static final RestAreaStore INVALID_STORE = new RestAreaStore();
+    public static final Store INVALID_STORE = new Store();
 
     @Value("${batch.resource.location}")
     private String location;
@@ -32,16 +32,17 @@ public class RestAreaStoreResourceHolder implements BatchCsvResourceHolder<RestA
     }
 
     @Override
-    public LineMapper<RestAreaStore> getLineMapper() {
+    public LineMapper<Store> getLineMapper() {
         return new DefaultLineMapper<>() {{
             setFieldSetMapper(fieldSet -> {
                 try {
-                    return new RestAreaStore(
+                    return new Store(
                         fieldSet.readLong("번호"),
                         fieldSet.readString("사업장명"),
+                        fieldSet.readString("소재지전체주소"),
+                        fieldSet.readString("도로명전체주소"),
                         fieldSet.readDouble("좌표정보(x)"),
-                        fieldSet.readDouble("좌표정보(y)")
-                    );
+                        fieldSet.readDouble("좌표정보(y)"));
                 } catch (Exception e) {
                     return INVALID_STORE;
                 }

@@ -1,11 +1,14 @@
-DROP TABLE IF EXISTS rest_area_store;
+DROP TABLE IF EXISTS store;
 
-CREATE TABLE rest_area_store
+CREATE TABLE store
 (
-    id          BIGINT          NOT NULL,
-    store_name  VARCHAR(255)    NOT NULL,
-    location    POINT           NOT NULL,
+    id              BIGINT          NOT NULL,
+    store_name      VARCHAR(255)    NOT NULL,
+    address         VARCHAR(255)    NOT NULL,
+    road_address    VARCHAR(255)    NOT NULL,
+    location        POINT           NOT NULL SRID 2079,
     PRIMARY KEY (id)
 );
 
-CREATE SPATIAL INDEX IDX_rest_area_store_location ON rest_area_store (location);
+# DROP INDEX IDX_store_location on store;
+CREATE SPATIAL INDEX IDX_store_location ON store (location);
