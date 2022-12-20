@@ -1,8 +1,11 @@
-drop table if exists spring_batch.rest_area_store;
+DROP TABLE IF EXISTS rest_area_store;
 
-create table spring_batch.rest_area_store
+CREATE TABLE rest_area_store
 (
-    id    bigint       not null primary key,
-    store_name  varchar(255) null,
-    location point     null
+    id          BIGINT          NOT NULL,
+    store_name  VARCHAR(255)    NOT NULL,
+    location    POINT           NOT NULL,
+    PRIMARY KEY (id)
 );
+
+CREATE SPATIAL INDEX IDX_rest_area_store_location ON rest_area_store (location);

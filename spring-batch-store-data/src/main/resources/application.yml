@@ -1,23 +1,4 @@
 spring:
-  profiles:
-    active: local
-
----
-spring:
-  config:
-    activate:
-      on-profile: local
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
----
-spring:
-  config:
-    activate:
-      on-profile: mysql
   datasource:
     url: jdbc:mysql://localhost:3306/spring_batch?rewriteBatchedStatements=true
     username: root
@@ -25,16 +6,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       auto-commit: false
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
-    properties:
-      hibernate:
-        connection:
-          autocommit: true
-    hibernate:
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
   sql:
     init:
       mode: always
