@@ -10,10 +10,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.example</groupId>
-  <artifactId>discovery-service-mvn</artifactId>
+  <artifactId>discovery-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>discovery-service-mvn</name>
-  <description>discovery-service-mvn</description>
+  <name>discovery-service</name>
+  <description>discovery-service</description>
   <properties>
     <java.version>11</java.version>
     <spring-cloud.version>2021.0.5</spring-cloud.version>
