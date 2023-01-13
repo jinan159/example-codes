@@ -8,7 +8,7 @@ import com.jjikmuk.sikdorak.image.command.app.ImageMetaDataService;
 import com.jjikmuk.sikdorak.image.command.domain.ImageMetaData;
 import com.jjikmuk.sikdorak.image.exception.DuplicateImageMetaDataException;
 import com.jjikmuk.sikdorak.image.exception.NotFoundImageMetaDataException;
-import com.jjikmuk.sikdorak.integration.InitIntegrationTest;
+import com.jjikmuk.sikdorak.integration.AWSInitIntegrationTest;
 import com.jjikmuk.sikdorak.user.auth.api.LoginUser;
 import com.jjikmuk.sikdorak.user.user.command.domain.Authority;
 import com.jjikmuk.sikdorak.user.user.exception.NotFoundUserException;
@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * [ ]. 이미지 삭제
  */
 @DisplayName("통합 : Image 메타정보 생성")
-class ImageMetaDataServiceTest extends InitIntegrationTest {
+class ImageMetaDataServiceTest extends AWSInitIntegrationTest {
 
 	@Autowired
 	private ImageMetaDataService imageMetaDataService;
