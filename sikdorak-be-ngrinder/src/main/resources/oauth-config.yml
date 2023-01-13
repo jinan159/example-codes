@@ -10,7 +10,7 @@ oauth:
 
 
 secret:
-  secretKey: sample-secretKey
+  secretKey: sample-secretKey-sample-secretKey
   accessTokenExpiredMillisecond: 1800000
   refreshTokenExpiredMillisecond: 604800000
 
