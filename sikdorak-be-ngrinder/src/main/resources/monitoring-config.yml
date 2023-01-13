@@ -1,0 +1,12 @@
+# 'prod' 환경 only
+management:
+  metrics:
+    export:
+      cloudwatch:
+        namespace: sikdorak-prod
+        step: 1
+        enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+  <!-- Convertion classes -->
+  <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+  <conversionRule conversionWord="wEx"
+    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+  <!-- Custom Convertion classes -->
+  <conversionRule conversionWord="exname" converterClass="com.jjikmuk.sikdorak.common.config.ExceptionNameConverter"/>
+
+  <!-- Log Patterns -->
+  <property name="LOG_PATTERN"
+    value="${LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} [${HOSTNAME}] %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+  <property name="AWS_LOG_PATTERN"
+    value="[%date] [%level] [%thread] [%file:%line] - %msg%n"/>
+  <property name="AWS_ERROR_LOG_PATTERN"
+    value="[%date] [%level] [%thread] [%file:%line] [%exname] - %msg%n"/>
+
+
+  <!-- AWS Credentials -->
+  <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
+  <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
+
+  <!-- AWS CloudWatch logs configuration values -->
+  <property name="LOG_REGION" value="ap-northeast-2"/>
+  <property name="MAX_BATCH_LOG_EVENTS" value="50"/>
+  <property name="MAX_FLUSH_TIME_MILLIS" value="30000"/>
+  <property name="MAX_BLOCK_TIME_MILLIS" value="5000"/>
+  <property name="RETENTION_TIME_DAYS" value="0"/>
+
+  <!-- Local console appender -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>${LOG_PATTERN}</pattern>
+    </layout>
+  </appender>
+
+  <!-- AWS CloudWatch GENERAL LOG appender -->
+  <appender name="aws_cloudwatch_log" class="ca.pjer.logback.AwsLogsAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>${AWS_LOG_PATTERN}</pattern>
+    </layout>
+
+    <if condition='property("spring.profiles.active").contains("local")'>
+      <then>
+        <logGroupName>sikdorak-local-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-local-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <if condition='property("spring.profiles.active").contains("dev")'>
+      <then>
+        <logGroupName>sikdorak-dev-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-dev-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <if condition='property("spring.profiles.active").contains("prod")'>
+      <then>
+        <logGroupName>sikdorak-prod-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-prod-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <logRegion>${LOG_REGION}</logRegion>
+    <maxBatchLogEvents>${MAX_BATCH_LOG_EVENTS}</maxBatchLogEvents>
+    <maxFlushTimeMillis>${MAX_FLUSH_TIME_MILLIS}</maxFlushTimeMillis>
+    <maxBlockTimeMillis>${MAX_BLOCK_TIME_MILLIS}</maxBlockTimeMillis>
+    <retentionTimeDays>${RETENTION_TIME_DAYS}</retentionTimeDays>
+    <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+    <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+  </appender>
+
+  <!-- AWS CloudWatch ERROR LOG appender -->
+  <appender name="aws_cloudwatch_error_log" class="ca.pjer.logback.AwsLogsAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>${AWS_ERROR_LOG_PATTERN}</pattern>
+    </layout>
+
+    <if condition='property("spring.profiles.active").contains("local")'>
+      <then>
+        <logGroupName>sikdorak-local-error-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-local-error-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <if condition='property("spring.profiles.active").contains("dev")'>
+      <then>
+        <logGroupName>sikdorak-dev-error-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-dev-error-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <if condition='property("spring.profiles.active").contains("prod")'>
+      <then>
+        <logGroupName>sikdorak-prod-error-log</logGroupName>
+        <logStreamUuidPrefix>sikdorak-prod-error-log/</logStreamUuidPrefix>
+      </then>
+    </if>
+    <logRegion>${LOG_REGION}</logRegion>
+    <maxBatchLogEvents>${MAX_BATCH_LOG_EVENTS}</maxBatchLogEvents>
+    <maxFlushTimeMillis>${MAX_FLUSH_TIME_MILLIS}</maxFlushTimeMillis>
+    <maxBlockTimeMillis>${MAX_BLOCK_TIME_MILLIS}</maxBlockTimeMillis>
+    <retentionTimeDays>${RETENTION_TIME_DAYS}</retentionTimeDays>
+    <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+    <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+  </appender>
+
+  <!-- 로컬 개발 환경 -->
+  <springProfile name="local">
+    <root level="info">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="com.jjikmuk.sikdorak" level="debug" additivity="false">
+      <appender-ref ref="CONSOLE"/>
+    </logger>
+  </springProfile>
+
+  <!-- 테스트 서버 환경 -->
+  <springProfile name="dev">
+    <root level="info">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="com.jjikmuk.sikdorak" level="debug" additivity="false">
+      <appender-ref ref="CONSOLE"/>
+    </logger>
+
+<!--    <logger name="com.jjikmuk.sikdorak" level="error" additivity="false">-->
+<!--      <appender-ref ref="aws_cloudwatch_error_log"/>-->
+<!--    </logger>-->
+  </springProfile>
+
+  <!-- 운영 서버 환경 -->
+  <springProfile name="prod">
+    <root level="info">
+      <appender-ref ref="CONSOLE"/>
+<!--      <appender-ref ref="aws_cloudwatch_log"/>-->
+    </root>
+
+<!--    <logger name="com.jjikmuk.sikdorak" level="error" additivity="false">-->
+<!--      <appender-ref ref="aws_cloudwatch_error_log"/>-->
+<!--    </logger>-->
+  </springProfile>
+</configuration>

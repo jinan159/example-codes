@@ -1,0 +1,26 @@
+spring:
+  config:
+    import: api-config.yml, aws-credential.yml, aws-s3.yml, jpa-config.yml, monitoring-config.yml, oauth-config.yml, web-config.yml
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:sikdorakDB;NON_KEYWORDS=USER
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+
+logging:
+  level:
+    com.jjikmuk.sikdorak: debug
+    org.hibernate.SQL: debug
+
+oauth:
+  kakao:
+    redirect_uri: http://localhost:8080/api/oauth/callback

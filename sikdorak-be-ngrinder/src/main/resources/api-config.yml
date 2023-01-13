@@ -1,0 +1,4 @@
+api:
+  kakao:
+    api_url: https://dapi.kakao.com
+    token: "KakaoAK sample-kakao-token"

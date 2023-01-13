@@ -1,0 +1,8 @@
+# https://jojoldu.tistory.com/300
+cloud:
+  aws:
+    s3:
+      bucket: "sikdorak-images"
+    region:
+      static: ap-northeast-2
+      auto: false

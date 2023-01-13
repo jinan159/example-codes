@@ -1,0 +1,74 @@
+spring:
+  #  main: # mock s3 설정 중 bean overriding 안되는 문제, springboot 2.1 버전에서, 현재는 해당 안됨 : https://techblog.woowahan.com/2638/
+  #    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8://testDB
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    defer-datasource-initialization: true
+    show-sql: false
+
+
+sql:
+  init:
+    mode: always
+    encoding: UTF-8
+
+logging:
+  level:
+    com.jjikmuk.sikdorak: debug
+    org.hibernate.SQL: debug
+
+oauth:
+  kakao:
+    login_page_url: "https://kauth.kakao.com/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=%s"
+    grant_type: authorization_code
+    client_id: 1234
+    redirect_uri: redirectUri
+    response_type: code
+    service:
+      token_url: https://kauth.kakao.com/
+      api_url: https://kapi.kakao.com/
+
+
+secret:
+  secretKey: kukimjayforkyrumkahoikukimjayforkyrumkahoi
+  accessTokenExpiredMillisecond: 7200000
+  refreshTokenExpiredMillisecond: 604800000
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+
+webconfig:
+  cors:
+    allowedOrigins: http://localhost:3000
+
+# mock s3
+cloud:
+  aws:
+    s3:
+      bucket: "sikdorak-images"
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      accessKey:
+      secretKey:
+
+
+# api-url
+api:
+  kakao:
+    api_url: http://test.api.url
+    token: KakaoAK testtokentesttokentesttokentestt
