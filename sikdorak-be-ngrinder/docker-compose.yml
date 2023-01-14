@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+
+  # 식도락 API 서버 : 부하테스트 대상
+  sikdorak-was:
+    image: sikdorak/was
+    container_name: sikdorak-was
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    networks:
+      - sbn-net
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+        reservations:
+          memory: 512M
+
+  # 식도락 DB 서버
+  sikdorak-db:
+    image: mysql:8.0
+    container_name: sikdorak-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - "3306:3306"
+    networks:
+      - sbn-net
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+        reservations:
+          memory: 512M
+
+  # ngrinder controller : agent 를 통해 부하 테스트 수행
+  # 공식 이미지가 로컬에서 실행이 잘 되지않아, 직접 컨테이너 실행
+  # 공식 이미지 : https://hub.docker.com/r/ngrinder/controller
+  controller:
+    image: sikdorak/ngrinder-controller
+    container_name: controller
+    build:
+      context: ./ngrinder/controller
+    volumes:
+      - ~/ngrinder/controller/data:/opt/ngrinder-controller
+    ports:
+      - "80:80"
+    networks:
+      - sbn-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 4
+
+  # ngrinder agent : 부하 테스트 요청을 보내는 주체
+  agent:
+    image: ngrinder/agent:3.5.8
+    networks:
+      - sbn-net
+    depends_on:
+      controller:
+        condition: service_healthy
+
+networks:
+  sbn-net:
+    name: sbn-net
+    driver: bridge
