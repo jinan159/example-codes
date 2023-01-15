@@ -5,7 +5,8 @@ services:
   # 식도락 API 서버 : 부하테스트 대상
   sikdorak-was:
     image: sikdorak/was
-    container_name: sikdorak-was
+    # ngrinder 에서 이 컨테이너를 찾을 수 있도록 이름을 url 형식으로 지음
+    container_name: api.sikdorak-was.net
     build:
       context: .
     ports:
@@ -26,6 +27,10 @@ services:
     container_name: sikdorak-db
     environment:
       - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - type: volume
+        source: sikdorak-data
+        target: /var/lib/mysql
     ports:
       - "3306:3306"
     networks:
@@ -45,9 +50,11 @@ services:
     image: sikdorak/ngrinder-controller
     container_name: controller
     build:
-      context: ./ngrinder/controller
+      context: ./docker/ngrinder-controller
     volumes:
-      - ~/ngrinder/controller/data:/opt/ngrinder-controller
+      - type: volume
+        source: controller-data
+        target: /opt/ngrinder-controller
     ports:
       - "80:80"
     networks:
@@ -71,3 +78,9 @@ networks:
   sbn-net:
     name: sbn-net
     driver: bridge
+
+volumes:
+  sikdorak-data:
+    name: sikdorak-data
+  controller-data:
+    name: controller-data
