@@ -13,6 +13,10 @@ services:
       - "8080:8080"
     networks:
       - sbn-net
+    # ngrinder monitor 설치를 위해 controller 실행 후 실행
+    depends_on:
+      controller:
+        condition: service_healthy
     deploy:
       resources:
         limits:
