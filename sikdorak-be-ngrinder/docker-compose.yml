@@ -58,7 +58,7 @@ services:
     volumes:
       - type: volume
         source: controller-data
-        target: /opt/ngrinder-controller
+        target: /app/controller-home
     ports:
       - "80:80"
     networks:
