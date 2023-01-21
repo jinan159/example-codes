@@ -115,14 +115,14 @@ asciidoctor {
 }
 
 asciidoctor.doFirst {
-    delete file("${project.rootDir}/src/main/resources/static/docs")
+    delete file("${project.projectDir}/src/main/resources/static/docs")
 }
 
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
 
     from "${project.buildDir}/docs/asciidoc"
-    into "${project.rootDir}/src/main/resources/static/docs"
+    into "${project.projectDir}/src/main/resources/static/docs"
 }
 
 bootJar {
