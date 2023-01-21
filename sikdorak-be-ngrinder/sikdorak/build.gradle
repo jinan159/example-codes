@@ -1,0 +1,134 @@
+buildscript {
+    ext {
+        springCloudVersion = '2021.0.3'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'java'
+    id 'com.google.cloud.tools.jib' version '3.3.0'
+}
+
+group = 'com.jjikmuk'
+version = '0.0.1'
+sourceCompatibility = '17'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+configurations {
+    asciidoctorExtensions // dependencies 에서 적용한 것 추가
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+jar {
+    enabled = false
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'commons-validator:commons-validator:1.7'
+
+    // Database
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    // Dev
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured'
+
+    // API Docs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+    // TestContainers
+    testImplementation 'org.testcontainers:junit-jupiter:1.17.2'
+    testImplementation 'org.testcontainers:mysql:1.17.2'
+
+    // Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    //Jwt
+    compileOnly 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // WireMock
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+
+    // aws : https://spring.io/blog/2021/03/17/spring-cloud-aws-2-3-is-now-available#why-has-the-package-name-changed
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+    testImplementation 'org.testcontainers:localstack:1.17.3'
+
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-cloudwatch2:1.9.1'
+
+    // Logging
+    implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
+    implementation 'org.codehaus.janino:janino:3.1.8'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//-- API 문서 관련 설정 -------------------------------------------------------
+ext {
+    snippetsDir = file("${project.buildDir}/generated-snippets")
+}
+
+asciidoctor {
+    dependsOn test
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+
+    sources {
+        include '**/index.adoc'
+    }
+
+    baseDirFollowsSourceFile()
+}
+
+asciidoctor.doFirst {
+    delete file("${project.rootDir}/src/main/resources/static/docs")
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from "${project.buildDir}/docs/asciidoc"
+    into "${project.rootDir}/src/main/resources/static/docs"
+}
+
+bootJar {
+    dependsOn copyDocument
+    copy {
+        from "${project.buildDir}/docs/asciidoc"
+        into "${project.buildDir}/resources/main/static/docs"
+    }
+}

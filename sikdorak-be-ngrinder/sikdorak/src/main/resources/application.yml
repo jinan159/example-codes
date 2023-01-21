@@ -1,6 +1,13 @@
 spring:
   config:
-    import: api-config.yml, aws-credential.yml, aws-s3.yml, jpa-config.yml, monitoring-config.yml, oauth-config.yml, web-config.yml
+    import:
+      - api-config.yml
+      - aws-credential.yml
+      - aws-s3.yml
+      - jpa-config.yml
+      - monitoring-config.yml
+      - oauth-config.yml
+      - web-config.yml
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:sikdorakDB;NON_KEYWORDS=USER

@@ -8,7 +8,7 @@ services:
     # ngrinder 에서 이 컨테이너를 찾을 수 있도록 이름을 url 형식으로 지음
     container_name: api.sikdorak-was.net
     build:
-      context: .
+      context: ./sikdorak
     ports:
       - "8080:8080"
     networks:
@@ -36,7 +36,7 @@ services:
         source: sikdorak-data
         target: /var/lib/mysql
       - type: bind
-        source: ./docker/mysql/conf.d
+        source: ./docker/mysql/conf.d/sikdorak-db.cnf
         target: /etc/mysql/conf.d
     ports:
       - "3306:3306"
