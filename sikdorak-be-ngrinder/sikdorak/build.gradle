@@ -87,6 +87,7 @@ dependencies {
     // Monitoring
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-cloudwatch2:1.9.1'
+    implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
 
     // Logging
     implementation 'ca.pjer:logback-awslogs-appender:1.6.0'

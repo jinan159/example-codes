@@ -1,2 +1,3 @@
 rootProject.name = 'sikdorak-be-ngrinder'
 include 'sikdorak'
+include 'monitoring-server'

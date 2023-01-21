@@ -2,6 +2,22 @@ version: "3.8"
 
 services:
 
+  # JVM Metric monitoring server
+  monitoring-server:
+    image: sikdorak/monitoring-server
+    container_name: monitoring-server
+    build:
+      context: ./monitoring-server
+    ports:
+      - "9090:9090"
+    networks:
+      - sbn-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+      interval: 5s
+      timeout: 5s
+      retries: 6
+
   # 식도락 API 서버 : 부하테스트 대상
   sikdorak-was:
     image: sikdorak/was
@@ -15,6 +31,8 @@ services:
       - sbn-net
     # ngrinder monitor 설치를 위해 controller 실행 후 실행
     depends_on:
+      monitoring-server:
+        condition: service_healthy
       controller:
         condition: service_healthy
     deploy:
@@ -36,7 +54,7 @@ services:
         source: sikdorak-data
         target: /var/lib/mysql
       - type: bind
-        source: ./docker/mysql/conf.d/sikdorak-db.cnf
+        source: ./docker/mysql/conf.d
         target: /etc/mysql/conf.d
     ports:
       - "3306:3306"
