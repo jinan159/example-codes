@@ -15,7 +15,7 @@ APP_BASE_DIR=/app
 
 cd $APP_BASE_DIR
 
-for i in {1..30};
+for i in {1..5};
 do
   wget -O $APP_BASE_DIR/ngrinder-monitor.tar -T 60 $MONITOR_DOWNLOAD_URL && break || sleep 10
 done
@@ -23,7 +23,6 @@ done
 if [ ! -f "$APP_BASE_DIR/ngrinder-monitor.tar" ];
 then
   echo "Fail to download an monitor file from "$MONITOR_DOWNLOAD_URL
-  exit 1
 else
   tar -xvf $APP_BASE_DIR/ngrinder-monitor.tar
   MONITOR_DIR=$APP_BASE_DIR/ngrinder-monitor
@@ -37,5 +36,5 @@ then
   exit 1
 else
   echo "Application $APP_BASE_DIR/sikdorak.jar starting..."
-  java -jar $APP_BASE_DIR/sikdorak.jar -Xms512m -Xmx1024m
+  java -Xms512m -Xmx1024m -jar -Dspring.profiles.active=prod $APP_BASE_DIR/sikdorak.jar
 fi
