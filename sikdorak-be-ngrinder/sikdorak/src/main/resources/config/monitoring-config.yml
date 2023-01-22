@@ -1,0 +1,38 @@
+# common settings
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+spring:
+  boot:
+    admin:
+      client:
+        enabled: true
+        connect-timeout: 60000 # 60sec, 1m
+
+---
+# 'local' profile
+spring:
+  config:
+    activate:
+      on-profile: local
+  boot:
+    admin:
+      client:
+        url: http://localhost:9090
+        instance:
+          name: sikdorak-was-local
+
+---
+# 'perform' profile
+spring:
+  config:
+    activate:
+      on-profile: perform
+  boot:
+    admin:
+      client:
+        url: http://monitoring-server:9090
+        instance:
+          name: sikdorak-was-prod

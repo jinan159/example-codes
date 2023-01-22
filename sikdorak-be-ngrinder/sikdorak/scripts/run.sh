@@ -36,5 +36,5 @@ then
   exit 1
 else
   echo "Application $APP_BASE_DIR/sikdorak.jar starting..."
-  java -Xms512m -Xmx1024m -jar -Dspring.profiles.active=prod $APP_BASE_DIR/sikdorak.jar
+  java -Xms512m -Xmx1024m -jar -Dspring.profiles.active=perform $APP_BASE_DIR/sikdorak.jar
 fi
