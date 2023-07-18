@@ -1,0 +1,9 @@
+[submodule "spring-security-oauth2/spring-security-oauth2/src/main/resources"]
+	path = spring-security-oauth2/spring-security-oauth2/src/main/resources
+	url = https://github.com/jinan159/spring-security-oauth2-resources.git
+[submodule "spring-security-oauth2/src/main/spring-security-oauth2-resources"]
+	path = spring-security-oauth2/src/main/spring-security-oauth2-resources
+	url = https://github.com/jinan159/spring-security-oauth2-resources.git
+[submodule "spring-security-oauth2/src/main/resources"]
+	path = spring-security-oauth2/src/main/resources
+	url = https://github.com/jinan159/spring-security-oauth2-resources.git
