@@ -1,24 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("application")
-
     kotlin("jvm") version "1.9.0"
 }
 
-application {
-    mainClass.set("com.example.HelloKt")
-}
-
 group = "org.example"
-version = "1.0-SNAPSHOT"
+version = "unspecified"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":lib")))
     testImplementation(kotlin("test"))
 }
 

@@ -1,5 +1,10 @@
 package com.example
 
+import com.example.lib.World
+
 fun main() {
-    print("hello")
+    val word = World()
+
+    print("hello ")
+    word.printWorld()
 }
