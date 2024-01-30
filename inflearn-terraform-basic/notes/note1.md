@@ -25,7 +25,7 @@ terraform destroy
 - terraform backend 가 살아있는지 확인(S3 등에 백엔드 스택 정보가 생성되나?)
 
 2. Provider Plugin Download
-- provider 플러그인이 있는지 확인 & 로컬에 다운로드
+- provider 플러그인이 있는지 확인 & 로컬에 다운로드
 
 3. Terraform 모듈 다운로드
 
